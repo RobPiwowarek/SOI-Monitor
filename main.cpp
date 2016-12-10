@@ -7,35 +7,35 @@ Buffer buffer;
 
 void *producerA(void *){
     while(true){
-        usleep(rand()%10);
+        usleep(rand()%600);
         buffer.insertA();
     }
 }
 
 void *producerB(void *){
     while(true){
-        usleep(rand()%10);
+        usleep(rand()%400);
         buffer.insertB();
     }
 }
 
 void *consumerA(void *){
     while(true){
-        usleep(rand()%10);
+        usleep(rand()%100);
         buffer.consumeA();
     }
 }
 
 void *consumerB(void *){
     while(true){
-        usleep(rand()%10);
+        usleep(rand()%50);
         buffer.consumeB();
     }
 }
 
 void *consumerC(void *){
     while(true){
-        usleep(rand()%10);
+        usleep(rand()%150);
         buffer.consumeC();
     }
 }
