@@ -46,9 +46,11 @@ public:
 
         printBuffer();
 
-        signal(consA);
-        signal(consB);
-        signal(consC);
+        if (buffer.size() == N) {
+            signal(consA);
+            signal(consB);
+            signal(consC);
+        }
         leave();
     }
 
@@ -66,10 +68,11 @@ public:
 
         printBuffer();
 
-        signal(consA);
-        signal(consB);
-        signal(consC);
-
+        if (buffer.size() == N) {
+            signal(consA);
+            signal(consB);
+            signal(consC);
+        }
         leave();
     }
 
@@ -95,9 +98,9 @@ public:
            std::cout << "ConsumerA consuming the flesh of front letter: " << node.A << std::endl;
             buffer.pop_front();
 
-            if (buffer.size() <= N-2) signal(prodB);
+            if (buffer.size() + 1 > 0 && buffer.size() == 0) signal(prodB);
 
-            signal(prodA);
+            if (buffer.size() + 1 > 0 && buffer.size() ==0) signal(prodA);
 
             signal(readB);
 
@@ -131,9 +134,9 @@ public:
 
             buffer.pop_front();
 
-            if (buffer.size() <= N-2) signal(prodB);
+            if (buffer.size() + 1 > 0 && buffer.size() == 0) signal(prodB);
 
-            signal(prodA);
+            if (buffer.size() + 1 > 0 && buffer.size() ==0) signal(prodA);
 
             signal(readA);
 
@@ -166,8 +169,9 @@ public:
           std::cout << "ConsumerC : drinking the blood of letter: " << node.A << std::endl;
             buffer.pop_front();
 
-            if (buffer.size() <= N-2) signal(prodB);
-            signal(prodA);
+            if (buffer.size() + 1 > 0 && buffer.size() == 0) signal(prodB);
+
+            if (buffer.size() + 1 > 0 && buffer.size() ==0) signal(prodA);
         }
 
         printBuffer();
