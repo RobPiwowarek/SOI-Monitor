@@ -1,4 +1,4 @@
- #include <deque>
+#include <deque>
 #include <cstdlib>
 #include <iostream>
 #include "monitor.h"
@@ -14,7 +14,7 @@ char generateRandomLetter() {
 class Buffer: Monitor {
 
 private:
-    Condition prodA, prodB, consA, consB, consC, readA, readB, readC;
+    Condition prodA, prodB, consA, consB, consC;
 
     class Node{
     public:
@@ -38,6 +38,7 @@ public:
         printf("PA\n");
 
         while (buffer.size() == N){
+            std::cout << "PA STOI" << std::endl;
             wait(prodA);
         }
 
@@ -46,11 +47,21 @@ public:
 
         printBuffer();
 
-        if (buffer.size() == N) {
+        if (buffer.size() > 0) {
+            std::cout << "CA RUSZA" << std::endl;
             signal(consA);
+        }
+
+        if (buffer.size() > 0) {
+            std::cout << "CB RUSZA" << std::endl;
             signal(consB);
+        }
+
+        if (buffer.size() > 0) {
+            std::cout << "CC RUSZA" << std::endl;
             signal(consC);
         }
+
         leave();
     }
 
@@ -59,6 +70,7 @@ public:
         printf("PB\n");
 
         while (buffer.size() > N-2){
+            std::cout << "PB STOI" << std::endl;
             wait(prodB);
         }
 
@@ -68,11 +80,21 @@ public:
 
         printBuffer();
 
-        if (buffer.size() == N) {
+        if (buffer.size() > 0) {
+            std::cout << "CA RUSZA" << std::endl;
             signal(consA);
+        }
+
+        if (buffer.size() > 0) {
+            std::cout << "CB RUSZA" << std::endl;
             signal(consB);
+        }
+
+        if (buffer.size() > 0) {
+            std::cout << "CC RUSZA" << std::endl;
             signal(consC);
         }
+
         leave();
     }
 
@@ -80,31 +102,31 @@ public:
         enter();
         printf("CA\n");
 
-        while (buffer.size() == 0){
+        while (buffer.size() == 0 || buffer.front().rA){
+            std::cout << "CA STOI" << std::endl;
             wait(consA);
-        }
-
-        while (buffer.front().rA){
-            wait(readA);
         }
 
         Node node = buffer.front();
 
         std::cout << "ConsumerA read: " << node.A << std::endl;
 
-        node.rA = true;
+        buffer.front().rA = true;
 
         if (node.rB){
-           std::cout << "ConsumerA consuming the flesh of front letter: " << node.A << std::endl;
+            std::cout << "ConsumerA consuming the flesh of front letter: " << node.A << std::endl;
             buffer.pop_front();
 
-            if (buffer.size() + 1 > 0 && buffer.size() == 0) signal(prodB);
+            if (buffer.size() <= N-2) {
+                std::cout << "PB RUSZA" << std::endl;
+                signal(prodB);
+            }
 
-            if (buffer.size() + 1 > 0 && buffer.size() ==0) signal(prodA);
+            if (buffer.size() <= N-1) {
+                std::cout << "PA RUSZA" << std::endl;
+                signal(prodA);
+            }
 
-            signal(readB);
-
-            if (node.rC) signal(readC);
         }
 
         printBuffer();
@@ -115,32 +137,32 @@ public:
         enter();
         printf("CB\n");
 
-        while (buffer.size() == 0){
+        while (buffer.size() == 0 || buffer.front().rB){
+            std::cout << "CB STOI" << std::endl;
             wait(consB);
-        }
-
-        while (buffer.front().rB){
-            wait(readB);
         }
 
         Node node = buffer.front();
 
         std::cout << "ConsumerB read: " << node.A << std::endl;
 
-        node.rB = true;
+        buffer.front().rB = true;
 
         if (node.rA){
             std::cout << "ConsumerB gnawing the bones of letter: " << node.A << std::endl;
 
             buffer.pop_front();
 
-            if (buffer.size() + 1 > 0 && buffer.size() == 0) signal(prodB);
+            if (buffer.size() <= N-2) {
+                std::cout << "PB RUSZA" << std::endl;
+                signal(prodB);
+            }
 
-            if (buffer.size() + 1 > 0 && buffer.size() ==0) signal(prodA);
+            if (buffer.size() <= N-1) {
+                std::cout << "PA RUSZA" << std::endl;
+                signal(prodA);
+            }
 
-            signal(readA);
-
-            if (node.rC) signal(readC);
         }
 
         printBuffer();
@@ -151,27 +173,30 @@ public:
         enter();
         printf("CC\n");
 
-        while (buffer.size() == 0){
+        while (buffer.size() == 0 || buffer.front().rC){
+            std::cout << "CC STOI" << std::endl;
             wait(consC);
-        }
-
-        while (buffer.front().rC){
-            wait(readC);
         }
 
         Node node = buffer.front();
 
-       std::cout << "ConsumerC read: " << node.A << std::endl;
+        std::cout << "ConsumerC read: " << node.A << std::endl;
 
-        node.rC = true;
+        buffer.front().rC = true;
 
         if (!node.rA && !node.rB){
-          std::cout << "ConsumerC : drinking the blood of letter: " << node.A << std::endl;
+            std::cout << "ConsumerC : drinking the blood of letter: " << node.A << std::endl;
             buffer.pop_front();
 
-            if (buffer.size() + 1 > 0 && buffer.size() == 0) signal(prodB);
+            if (buffer.size() <= N-2) {
+                std::cout << "PB RUSZA" << std::endl;
+                signal(prodB);
+            }
 
-            if (buffer.size() + 1 > 0 && buffer.size() ==0) signal(prodA);
+            if (buffer.size() <= N-1) {
+                std::cout << "PA RUSZA" << std::endl;
+                signal(prodA);
+            }
         }
 
         printBuffer();
@@ -179,13 +204,12 @@ public:
     }
 
     void printBuffer(){
-      std::cout << "BUFFER SIZE: " << buffer.size() << std::endl;
+        std::cout << "BUFFER SIZE: " << buffer.size() << std::endl;
 
         for (auto it : buffer){
-           std::cout << it.A << " ";
+            std::cout << it.A << " ";
         }
         std::cout << std::endl;
-
 
     }
 
