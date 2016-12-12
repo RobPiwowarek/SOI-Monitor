@@ -47,17 +47,17 @@ public:
 
         printBuffer();
 
-        if (buffer.size() > 0) {
+        if (buffer.size() > 0 && !buffer.front().rA) {
             std::cout << "CA RUSZA" << std::endl;
             signal(consA);
         }
 
-        if (buffer.size() > 0) {
+        if (buffer.size() > 0 && !buffer.front().rB) {
             std::cout << "CB RUSZA" << std::endl;
             signal(consB);
         }
 
-        if (buffer.size() > 0) {
+        if (buffer.size() > 0 && !buffer.front().rC) {
             std::cout << "CC RUSZA" << std::endl;
             signal(consC);
         }
@@ -69,7 +69,7 @@ public:
         enter();
         printf("PB\n");
 
-        while (buffer.size() > N-2){
+        while (buffer.size()+2 > N){
             std::cout << "PB STOI" << std::endl;
             wait(prodB);
         }
@@ -80,17 +80,17 @@ public:
 
         printBuffer();
 
-        if (buffer.size() > 0) {
+        if (buffer.size() > 0 && !buffer.front().rA) {
             std::cout << "CA RUSZA" << std::endl;
             signal(consA);
         }
 
-        if (buffer.size() > 0) {
+        if (buffer.size() > 0 && !buffer.front().rB) {
             std::cout << "CB RUSZA" << std::endl;
             signal(consB);
         }
 
-        if (buffer.size() > 0) {
+        if (buffer.size() > 0 && !buffer.front().rC) {
             std::cout << "CC RUSZA" << std::endl;
             signal(consC);
         }
@@ -117,12 +117,12 @@ public:
             std::cout << "ConsumerA consuming the flesh of front letter: " << node.A << std::endl;
             buffer.pop_front();
 
-            if (buffer.size() <= N-2) {
+            if ((int)buffer.size() <= N-2) {
                 std::cout << "PB RUSZA" << std::endl;
                 signal(prodB);
             }
 
-            if (buffer.size() <= N-1) {
+            if ((int)buffer.size() <= N-1) {
                 std::cout << "PA RUSZA" << std::endl;
                 signal(prodA);
             }
@@ -153,12 +153,12 @@ public:
 
             buffer.pop_front();
 
-            if (buffer.size() <= N-2) {
+            if ((int)buffer.size() <= N-2) {
                 std::cout << "PB RUSZA" << std::endl;
                 signal(prodB);
             }
 
-            if (buffer.size() <= N-1) {
+            if ((int)buffer.size() <= N-1) {
                 std::cout << "PA RUSZA" << std::endl;
                 signal(prodA);
             }
@@ -188,12 +188,12 @@ public:
             std::cout << "ConsumerC : drinking the blood of letter: " << node.A << std::endl;
             buffer.pop_front();
 
-            if (buffer.size() <= N-2) {
+            if ((int)buffer.size() <= N-2) {
                 std::cout << "PB RUSZA" << std::endl;
                 signal(prodB);
             }
 
-            if (buffer.size() <= N-1) {
+            if ((int)buffer.size() <= N-1) {
                 std::cout << "PA RUSZA" << std::endl;
                 signal(prodA);
             }
